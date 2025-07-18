@@ -8,7 +8,7 @@ class Property(models.Model):
     id  = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255)
     description = models.TextField()
-    price_per_field = models.IntegerField()
+    price_per_night = models.IntegerField()
     bedrooms = models.IntegerField()
     bathrooms = models.IntegerField()
     guests = models.IntegerField()
@@ -25,3 +25,6 @@ class Property(models.Model):
     
     def image_url(self):
         return f'{settings.WEBSITE_URL}{self.image.url}'
+    
+    def __str__(self):
+        return f'{self.title} - {self.country_code}'
