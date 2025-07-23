@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Property
+from useraccount.serializers import UserDetailSeralizer
 
 class PropertiesListSerializer(serializers.ModelSerializer):
     
@@ -14,3 +15,9 @@ class PropertiesListSerializer(serializers.ModelSerializer):
             'pricePerNight',
             'imageUrl'
         ]
+        
+class PropertiesDetailSerializer(serializers.ModelSerializer):
+    landlord = UserDetailSeralizer(read_only = True, many = False)
+    class Meta:
+        model = Property
+        fields = '__all__'
