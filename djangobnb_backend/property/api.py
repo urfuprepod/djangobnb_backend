@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 from .models import Property, Reservation
-from .serializers import PropertiesListSerializer, PropertiesDetailSerializer
+from .serializers import PropertiesListSerializer, PropertiesDetailSerializer, ReservationListSerializer
 from .forms import PropertyForm
 
 @api_view(['GET'])
@@ -12,6 +12,9 @@ from .forms import PropertyForm
 def properties_list(request):
     properties = Property.objects.all()
     serializer = PropertiesListSerializer(properties, many=True)
+    landlord_id = request.GET.get('landlord_id', '')
+    if landlord_id:
+        properties = properties.filter(landlord_id = landlord_id)
     
     return JsonResponse({
         'data': serializer.data
@@ -22,6 +25,9 @@ def properties_list(request):
 @permission_classes([])
 def properties_detail(request, pk):
     property = Property.objects.get(pk = pk)
+    
+    
+    
     serializer = PropertiesDetailSerializer(property, many = False)
     
     return JsonResponse(serializer.data)
@@ -50,6 +56,33 @@ def book_property(request, pk):
         property = Property.objects.get(pk=pk)
         
         Reservation.objects.create(property = property, start_date=start_date, end_date=end_date, number_of_nights=number_of_nights, total_price=total_price, guests=guests, created_by=request.user)
+        return JsonResponse({'success': True})
     except Exception as e:
         print('Error', e)
         return JsonResponse({'success': False})
+    
+    
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([])
+def property_reservations(request, pk):
+    property = Property.objects.get(pk = pk)
+    resevations = property.reservations.all()
+    
+    serializer = ReservationListSerializer(resevations, many = True)
+    
+    return JsonResponse({
+        'data': serializer.data
+    })
+    
+    
+@api_view(['POST'])
+def toggle_favorite(request, pk):
+    property = Property.objects.get(pk=pk)
+    
+    if request.user in property.favorited.all():
+        property.favorited.remove(request.user)
+        return JsonResponse({'is_favorited': False})
+    
+    property.favorited.add(request.user)
+    return JsonResponse({'is_favorited': True})

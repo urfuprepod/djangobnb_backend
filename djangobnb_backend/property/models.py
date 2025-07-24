@@ -41,6 +41,8 @@ class Reservation(models.Model):
     created_by = models.ForeignKey(User, related_name='reservations', on_delete=models.CASCADE) # Имя обратной связи (User.reservations.all())
     created_at = models.DateTimeField(auto_now_add=True)
     
+    
+    
     class Meta:
         verbose_name = 'Бронь'
         verbose_name_plural = ('Брони')
