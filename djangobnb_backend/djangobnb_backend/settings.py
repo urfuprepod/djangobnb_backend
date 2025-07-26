@@ -16,6 +16,12 @@ AUTH_USER_MODEL = 'useraccount.User' # переопределение юзера
 
 SITE_ID = 1
 WEBSITE_URL = "http://localhost:8000"
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        
+    }
+}
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
@@ -63,6 +69,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + ['pragma']
 print(CORS_ALLOW_HEADERS)
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -73,6 +80,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'useraccount',
     'property',
+    'chat',
     'allauth',
     'allauth.account',
     'dj_rest_auth',
@@ -111,7 +119,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'djangobnb_backend.wsgi.application'
-
+ASGI_APPLICATION = 'djangobnb_backend.wsgi.application'
 
 DATABASES = {
     'default': {

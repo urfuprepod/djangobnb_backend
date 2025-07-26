@@ -7,6 +7,10 @@ class Conversation(models.Model):
     users = models.ManyToManyField(User, related_name='conversations')
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'Обращение'
+        verbose_name_plural = ('Обращения')
 # Create your models here.
 
 class ConversationMessage(models.Model):
@@ -16,3 +20,7 @@ class ConversationMessage(models.Model):
      sent_to = models.ForeignKey(User, related_name='received_messages', on_delete=models.CASCADE)
      created_by = models.ForeignKey(User, related_name='sent_messages', on_delete=models.CASCADE)
      created_at = models.DateTimeField(auto_now_add=True)
+     
+     class Meta:
+        verbose_name = 'Сообщение'
+        verbose_name_plural = ('Сообщения')

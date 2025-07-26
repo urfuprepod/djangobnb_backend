@@ -51,3 +51,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         if self.avatar:
             return f'{settings.WEBSITE_URL}{self.avatar.url}'
         return ''
+    
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = ('Пользователи')
