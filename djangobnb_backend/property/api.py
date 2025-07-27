@@ -26,11 +26,41 @@ def properties_list(request):
     
     is_favorites = request.GET.get('is_favorites', '')
     landlord_id = request.GET.get('landlord_id', '')
+    
+    country = request.GET.get('country', '')
+    category=request.GET.get('category', '')
+    guests= request.GET.get('numbGuests', '')
+    bedrooms= request.GET.get('bedrooms', '')
+    checkin = request.GET.get('checkin', '')
+    checkout = request.GET.get('checkout', '')
+    
     if landlord_id:
         properties = properties.filter(landlord_id = landlord_id)
         
     if is_favorites == 'true':
         properties = properties.filter(favorited__in=[user])
+        
+    if guests:
+        properties = properties.filter(guests__gte=guests)
+        
+    if bedrooms:
+        properties = properties.filter(bedrooms__gte=guests)
+    
+    if country:
+        properties = properties.filter(country=country)
+    
+    if category:
+        properties = properties.filter(category=category)
+        
+    if checkin and checkout:
+        exact_matches = Reservation.objects.filter(start_date=checkin) | Reservation.objects.filter(end_date=checkout)
+        overlap_matches = Reservation.objects.filter(start_date__lte=checkout, end_date__gte=checkin)
+        all_matches = []
+        
+        for reservation in exact_matches, overlap_matches:
+            all_matches.append(reservation.property_id)
+        properties = properties.exclude(id__in=all_matches)
+    
     favorites = []
     if user:
         for property in properties:
